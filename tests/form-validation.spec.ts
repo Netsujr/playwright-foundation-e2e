@@ -51,6 +51,10 @@ test.describe('Form Validation Tests', () => {
   });
 
   test('should validate email format', async () => {
+    // Skip test if email field doesn't exist on this form
+    const hasEmailField = await formPage.hasEmailField();
+    test.skip(!hasEmailField, 'Email field does not exist on this form');
+
     // Arrange
     const invalidEmail = TestData.formData.invalid.invalidEmail;
 

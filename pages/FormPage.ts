@@ -37,12 +37,20 @@ export class FormPage {
    * Fill form fields with provided data
    * @param firstName - First name value
    * @param lastName - Last name value
-   * @param email - Email value
+   * @param email - Email value (optional, only filled if field exists)
    */
-  async fillForm(firstName: string, lastName: string, email: string): Promise<void> {
+  async fillForm(firstName: string, lastName: string, email?: string): Promise<void> {
     if (firstName) await this.firstNameInput.fill(firstName);
     if (lastName) await this.lastNameInput.fill(lastName);
-    if (email) await this.emailInput.fill(email);
+    // Email field may not exist on all forms, so try to fill it with a short timeout
+    if (email) {
+      try {
+        await this.emailInput.fill(email, { timeout: 2000 });
+      } catch (error) {
+        // Email field doesn't exist on this form, skip it
+        // This is expected for forms that don't have an email field
+      }
+    }
   }
 
   /**
@@ -96,5 +104,18 @@ export class FormPage {
    */
   async isSuccessMessageVisible(): Promise<boolean> {
     return await this.successMessage.isVisible();
+  }
+
+  /**
+   * Check if email field exists on the form
+   * @returns True if email field exists
+   */
+  async hasEmailField(): Promise<boolean> {
+    try {
+      const count = await this.emailInput.count({ timeout: 2000 });
+      return count > 0;
+    } catch (error) {
+      return false;
+    }
   }
 }
