@@ -198,3 +198,4 @@ This is a demonstration repository. Feel free to use it as a template for your o
 ## 📄 License
 
 MIT
+# Trigger workflow
